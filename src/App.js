@@ -5,27 +5,35 @@ const App = () => {
   const [images, setImages] = useState([]);
 
   useEffect(() => {
-    // Dynamically load images from the public/radioMessages folder
-    const fetchImages = async () => {
-      // Assuming directory listing is enabled on your server
-      const response = await fetch('/radioMessages/');
-      const html = await response.text();
-
-      // Parse HTML to extract image file names
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
-      const imageElements = Array.from(doc.querySelectorAll('a'));
-      
-      // Filter and map valid image URLs
-      const imagePaths = imageElements
-        .map((el) => el.href)
-        .filter((path) => path.endsWith('.jpg') || path.endsWith('.png') || path.endsWith('.jpeg'));
-
-      setImages(imagePaths);
+    const extensions = [".jpg", ".jpeg", ".png"];
+    const totalImages = 66;
+  
+    const loadImage = (src) => {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(src);
+        img.onerror = () => resolve(null);
+        img.src = src;
+      });
     };
-
-    fetchImages();
+  
+    const fetchValidImages = async () => {
+      const candidates = [];
+  
+      for (let i = 1; i <= totalImages; i++) {
+        for (const ext of extensions) {
+          candidates.push(`/radioMessages/${i}${ext}`);
+        }
+      }
+  
+      const loadedImages = await Promise.all(candidates.map(loadImage));
+      const validImages = loadedImages.filter(Boolean);
+      setImages(validImages);
+    };
+  
+    fetchValidImages();
   }, []);
+  
 
   return (
     <div
