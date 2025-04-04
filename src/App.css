@@ -90,7 +90,7 @@ body {
 }
 
 .image-item img {
-  width: 100%; /* Fill the container width */
+  width: 75%; /* Fill the container width */
   height: auto; /* Maintain aspect ratio */
   object-fit: cover; /* Ensures consistent aspect ratio */
   border-radius: 15px; /* Rounded edges for idle state */

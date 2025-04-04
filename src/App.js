@@ -18,21 +18,27 @@ const App = () => {
     };
   
     const fetchValidImages = async () => {
-      const candidates = [];
+      const validImages = [];
   
       for (let i = 1; i <= totalImages; i++) {
         for (const ext of extensions) {
-          candidates.push(`/radioMessages/${i}${ext}`);
+          const path = `/radioMessages/${i}${ext}`;
+          const result = await loadImage(path);
+          if (result) {
+            validImages.push(result);
+            break; // Stop checking other extensions for this number
+          }
         }
       }
   
-      const loadedImages = await Promise.all(candidates.map(loadImage));
-      const validImages = loadedImages.filter(Boolean);
       setImages(validImages);
     };
   
+    
     fetchValidImages();
   }, []);
+  
+  
   
 
   return (
